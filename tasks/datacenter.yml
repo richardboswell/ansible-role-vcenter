@@ -1,5 +1,5 @@
 #
-#  Copyright 2015 VMware, Inc.
+# Copyright 2015 VMware, Inc.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,56 +14,54 @@
 #  limitations under the License.
 #
 ---
-- name: Assign values if IB vCenter action selected
-  set_fact:
-    vcenter_type: ib
-  tags:
-    - create_ib_datacenter_create_task
-    - create_ib_datacenter_destroy_task
-
-- name: Assign values if OOB vCenter action selected
-  set_fact:
-    vcenter_type: oob
-  tags:
-    - create_oob_datacenter_create_task
-    - create_oob_datacenter_destroy_task
-
-- name: Create the task to create the datacenter in the IB vCenter
-  template: src=../templates/create_datacenter.yml.j2 dest={{ vcenter_role_directory }}/tasks/create_ib_datacenter.yml
-  tags:
-    - create_ib_datacenter_create_task
-
-- name: Create the task to destroy the datacenter in the IB vCenter
-  template: src=../templates/destroy_datacenter.yml.j2 dest={{ vcenter_role_directory }}/tasks/destroy_ib_datacenter.yml
-  tags:
-    - create_ib_datacenter_destroy_task
-
-- name: Create the task to create the datacenter in the OOB vCenter
-  template: src=../templates/create_datacenter.yml.j2 dest={{ vcenter_role_directory }}/tasks/create_oob_datacenter.yml
+- name: Create OOB Datacenter
+  ignore_errors: no
+  local_action:
+    module: vmware_datacenter
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    datacenter_name: "{{ oob_vcenter_datacenter_name }}"
+    validate_certs: False
+    state: present
   tags:
     - create_oob_datacenter_create_task
+    
+- name: Create IB Datacenter
+  ignore_errors: no
+  local_action:
+    module: vmware_datacenter
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    datacenter_name: "{{ ib_vcenter_datacenter_name }}"
+    validate_certs: False
+    state: present
+  tags:
+    - create_ib_datacenter_create_task
 
-- name: Create the task to destroy the datacenter in the OOB vCenter
-  template: src=../templates/destroy_datacenter.yml.j2 dest={{ vcenter_role_directory }}/tasks/destroy_oob_datacenter.yml
+- name: Destroy OOB Datacenter
+  ignore_errors: no
+  local_action:
+    module: vmware_datacenter
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    datacenter_name: "{{ oob_vcenter_datacenter_name }}"
+    validate_certs: False
+    state: absent
   tags:
     - create_oob_datacenter_destroy_task
-
-- name: Create datacenter in the IB vCenter
-  include: create_ib_datacenter.yml
+    
+- name: Destroy IB Datacenter
+  ignore_errors: no
+  local_action:
+    module: vmware_datacenter
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    datacenter_name: "{{ ib_vcenter_datacenter_name }}"
+    validate_certs: False
+    state: absent
   tags:
-    - create_ib_datacenter
-
-- name: Create datacenter in the OOB vCenter
-  include: create_oob_datacenter.yml
-  tags:
-    - create_oob_datacenter
-
-- name: Destroy datacenter in the IB vCenter
-  include: destroy_ib_datacenter.yml
-  tags:
-    - destroy_ib_datacenter
-
-- name: Create datacenter in the OOB vCenter
-  include: destroy_oob_datacenter.yml
-  tags:
-    - destroy_oob_datacenter
+     - create_ib_datacenter_destroy_task
