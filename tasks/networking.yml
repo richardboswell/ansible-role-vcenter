@@ -14,6 +14,9 @@
 #  limitations under the License.
 #
 
+# NOTE - The values that the 'with_items' vars refer to are built by running the
+# 	 prepare_variables.py script. The script builds a JSON representation of
+#	 data in the answerfile for each of manipulation
 ---
 - name: Create OOB Management VDS
   local_action:
@@ -50,4 +53,57 @@
   with_items: "{{ oob_vcenter['dvs'] }}"
   tags:
     - destroy_oob_vcenter_dvs
+
+- name: Create IB Management VDS
+  local_action:
+    module: vmware_dvswitch
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
+    switch_name: "{{ item['name'] }}"
+    uplink_quantity: "{{ item['uplinks'] }}"
+    mtu: 1600
+    discovery_proto: lldp
+    discovery_operation: both
+    state: present
+    validate_certs: False
+  with_items: "{{ ib_vcenter['dvs'] }}"
+  tags:
+    - create_ib_vcenter_dvs
+
+- name: Destroy IB Management VDS
+  local_action:
+    module: vmware_dvswitch
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
+    datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
+    switch_name: "{{ item['name'] }}"
+    uplink_quantity: "{{ item['uplinks'] }}"
+    mtu: 1600
+    discovery_proto: lldp
+    discovery_operation: both
+    state: absent
+    validate_certs: False
+  with_items: "{{ ib_vcenter['dvs'] }}"
+  tags:
+    - destroy_ib_vcenter_dvs
+
+- name: Create standard OOB management VDS portgroups
+  local_action:
+    module: vmware_dvs_portgroup
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
+    password: "{{ oob_vcenter_user_password }}"
+    switch_name: "{{ oob_vcenter['dvs'][0]['name'] }}"
+    portgroup_name: "{{ item['name'] }}"
+    vlan_id: "{{ item['vlan'] }}"
+    num_ports: "{{ item['ports'] }}"
+    portgroup_type: ephemeral
+    validate_certs: False
+    state: present
+  with_items: "{{ oob_vcenter['dvs'][0]['portgroups'] }}"
+  tags:
+    - create_oob_vcenter_portgroups
 

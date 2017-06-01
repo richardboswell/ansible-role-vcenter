@@ -25,7 +25,7 @@
     validate_certs: False
     state: present
   tags:
-    - create_oob_datacenter_create_task
+    - create_oob_datacenter
     
 - name: Create IB Datacenter
   ignore_errors: no
@@ -38,7 +38,7 @@
     validate_certs: False
     state: present
   tags:
-    - create_ib_datacenter_create_task
+    - create_ib_datacenter
 
 - name: Destroy OOB Datacenter
   ignore_errors: no
@@ -51,7 +51,7 @@
     validate_certs: False
     state: absent
   tags:
-    - create_oob_datacenter_destroy_task
+    - destroy_oob_datacenter
     
 - name: Destroy IB Datacenter
   ignore_errors: no
@@ -64,4 +64,4 @@
     validate_certs: False
     state: absent
   tags:
-     - create_ib_datacenter_destroy_task
+     - destroy_ib_datacenter

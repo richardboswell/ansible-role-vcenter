@@ -15,77 +15,73 @@
 #
 ---
 - name: Add NFS datastore to OOB ESX hosts
-  vcenter_add_nfs_ds:
-    host: "{{ oob_vcenter_url }}"
-    login: "{{ oob_vcenter_user_name }}"
+  vcenter_nfs_ds:
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
-    port: "{{ oob_vcenter_port }}"
     esxi_hostname: "{{ item.1.name }}"
-    nfs_host: "{{ oob_esx_server_nfs_host_name }}"
+    nfs_hostname: "{{ oob_esx_server_nfs_host_name }}"
     nfs_path: "{{ oob_esx_server_nfs_path }}"
     nfs_name: "{{ oob_esx_server_nfs_ds_name }}"
     nfs_access: "{{ oob_esx_server_nfs_access }}"
     nfs_type: "{{ oob_esx_server_nfs_type }}"
-    state: 'present'
+    state: present
   with_subelements:
-    - oob_vcenter.clusters
+    - "{{ oob_vcenter.clusters }}"
     - hosts
   tags:
     - add_nfs_ds_to_oob_esx
 
 - name: Add NFS datastore to IB ESX hosts
-  vcenter_add_nfs_ds:
-    host: "{{ ib_vcenter_url }}"
-    login: "{{ ib_vcenter_user_name }}"
+  vcenter_nfs_ds:
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
-    port: "{{ ib_vcenter_port }}"
     esxi_hostname: "{{ item.1.name }}"
-    nfs_host: "{{ ib_esx_server_nfs_host_name }}"
+    nfs_hostname: "{{ ib_esx_server_nfs_host_name }}"
     nfs_path: "{{ ib_esx_server_nfs_path }}"
     nfs_name: "{{ ib_esx_server_nfs_ds_name }}"
     nfs_access: "{{ ib_esx_server_nfs_access }}"
     nfs_type: "{{ ib_esx_server_nfs_type }}"
-    state: 'present'
+    state: present
   with_subelements:
-    - ib_vcenter.clusters
+    - "{{ ib_vcenter.clusters }}"
     - hosts
   tags:
     - add_nfs_ds_to_ib_esx
 
 - name: Remove NFS datastore from OOB ESX hosts
-  vcenter_add_nfs_ds:
-    host: "{{ oob_vcenter_url }}"
-    login: "{{ oob_vcenter_user_name }}"
+  vcenter_nfs_ds:
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
-    port: "{{ oob_vcenter_port }}"
     esxi_hostname: "{{ item.1.name }}"
-    nfs_host: "{{ oob_esx_server_nfs_host_name }}"
+    nfs_hostname: "{{ oob_esx_server_nfs_host_name }}"
     nfs_path: "{{ oob_esx_server_nfs_path }}"
     nfs_name: "{{ oob_esx_server_nfs_ds_name }}"
     nfs_access: "{{ oob_esx_server_nfs_access }}"
     nfs_type: "{{ oob_esx_server_nfs_type }}"
-    state: 'absent'
+    state: absent
   with_subelements:
-    - oob_vcenter.clusters
+    - "{{ oob_vcenter.clusters }}"
     - hosts
   tags:
     - remove_nfs_ds_from_oob_esx
 
 - name: Remove NFS datastore from IB ESX hosts
-  vcenter_add_nfs_ds:
-    host: "{{ oob_vcenter_url }}"
-    login: "{{ oob_vcenter_user_name }}"
-    password: "{{ oob_vcenter_user_password }}"
-    port: "{{ oob_vcenter_port }}"
+  vcenter_nfs_ds:
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
+    password: "{{ ib_vcenter_user_password }}"
     esxi_hostname: "{{ item.1.name }}"
-    nfs_host: "{{ ib_esx_server_nfs_host_name }}"
+    nfs_hostname: "{{ ib_esx_server_nfs_host_name }}"
     nfs_path: "{{ ib_esx_server_nfs_path }}"
     nfs_name: "{{ ib_esx_server_nfs_ds_name }}"
     nfs_access: "{{ ib_esx_server_nfs_access }}"
     nfs_type: "{{ ib_esx_server_nfs_type }}"
     state: 'present'
   with_subelements:
-    - ib_vcenter.clusters
+    - "{{ ib_vcenter.clusters }}"
     - hosts
   tags:
     - remove_nfs_ds_from_ib_esx

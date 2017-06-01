@@ -15,73 +15,77 @@
 #
 ---
 - name: Add ESX hosts to OOB cluster
-  vcenter_addhost:
-    host: "{{ oob_vcenter_url }}"
-    login: "{{ oob_vcenter_user_name }}"
+  local_action:
+    module: vmware_host
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
-    port: "{{ oob_vcenter_port }}"
     datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item.0.name }}"
     esxi_hostname: "{{ item.1.ip }}"
     esxi_username: "{{ item.1.username }}"
     esxi_password: "{{ item.1.password }}"
-    state: 'present'
+    validate_certs: False
+    state: present
   with_subelements:
-    - oob_vcenter.clusters
+    - "{{ oob_vcenter.clusters }}"
     - hosts
   tags:
     - add_esx_hosts_to_oob_esx_cluster
 
 - name: Add ESX hosts to IB clusters
-  vcenter_addhost:
-    host: "{{ ib_vcenter_url }}"
-    login: "{{ ib_vcenter_user_name }}"
+  local_action:
+    module: vmware_host
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
-    port: "{{ ib_vcenter_port }}"
     datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item.0.name }}"
     esxi_hostname: "{{ item.1.mgmt_ip }}"
     esxi_username: "{{ item.1.username }}"
     esxi_password: "{{ item.1.password }}"
-    state: 'present'
+    validate_certs: False
+    state: present
   with_subelements:
-    - ib_vcenter.clusters
+    - "{{ ib_vcenter.clusters }}"
     - hosts
   tags:
     - add_esx_hosts_to_ib_esx_cluster
 
 - name: Remove ESX hosts from OOB cluster
-  vcenter_addhost:
-    host: "{{ oob_vcenter_url }}"
-    login: "{{ oob_vcenter_user_name }}"
+  local_action:
+    module: vmware_host
+    hostname: "{{ oob_vcenter_url }}"
+    username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
-    port: "{{ oob_vcenter_port }}"
     datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item.0.name }}"
     esxi_hostname: "{{ item.1.ip }}"
     esxi_username: "{{ item.1.username }}"
     esxi_password: "{{ item.1.password }}"
-    state: 'absent'
+    validate_certs: False
+    state: absent
   with_subelements:
-    - oob_vcenter.clusters
+    - "{{ oob_vcenter.clusters }}"
     - hosts
   tags:
     - remove_esx_hosts_from_oob_esx_cluster
 
 - name: Remove ESX hosts from IB clusters
-  vcenter_addhost:
-    host: "{{ ib_vcenter_url }}"
-    login: "{{ ib_vcenter_user_name }}"
+  local_action:
+    module: vmware_host
+    hostname: "{{ ib_vcenter_url }}"
+    username: "{{ ib_vcenter_user_name }}"
     password: "{{ ib_vcenter_user_password }}"
-    port: "{{ ib_vcenter_port }}"
     datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item.0.name }}"
     esxi_hostname: "{{ item.1.ip }}"
     esxi_username: "{{ item.1.username }}"
     esxi_password: "{{ item.1.password }}"
-    state: 'absent'
+    validate_certs: False
+    state: absent
   with_subelements:
-    - ib_vcenter.clusters
+    - "{{ ib_vcenter.clusters }}"
     - hosts
   tags:
     - remove_esx_hosts_from_ib_esx_cluster

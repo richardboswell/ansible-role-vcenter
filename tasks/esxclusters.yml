@@ -1,5 +1,5 @@
 #
-#  Copyright 2015 VMware, Inc.
+#  Copyright 2017 VMware, Inc.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -14,122 +14,35 @@
 #  limitations under the License.
 #
 ---
-- name: Create clusters in the IB vCenter
-  ignore_errors: no
-  vcenter_cluster:
-    hostname: "{{ ib_vcenter_url }}"
-    username: "{{ ib_vcenter_user_name }}"
-    password: "{{ ib_vcenter_user_password }}"
-    datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
-    cluster_name: "{{ item['name'] }}"
-    state: present
-    ha:
-      enabled: True
-      admissionControlEnabled: True
-      failoverLevel: 1
-      hostMonitoring: 'enabled'
-      vmMonitoring: 'vmAndAppMonitoring'
-      vmMonitoring_sensitivity: 1
-      restartPriority: 'high'
-    drs:
-      enabled: True
-      enableVmBehaviorOverrides: True
-      defaultVmBehavior: 'fullyAutomated'
-      vmotionRate: 3
-    vsan:
-      enabled: False
-      autoClaimStorage: False
-  with_items:
-    - "{{ ib_vcenter['clusters'] }}"
-  tags:
-    - create_ib_clusters
-
 - name: Create clusters in the OOB vCenter
-  ignore_errors: no
-  vcenter_cluster:
+  local_action:
+    module: vmware_cluster
     hostname: "{{ oob_vcenter_url }}"
     username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
     datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item['name'] }}"
+    enable_ha: True
+    enable_drs: True
+    validate_certs: False
     state: present
-    ha:
-      enabled: True
-      admissionControlEnabled: True
-      failoverLevel: 1
-      hostMonitoring: 'enabled'
-      vmMonitoring: 'vmAndAppMonitoring'
-      vmMonitoring_sensitivity: 1
-      restartPriority: 'high'
-    drs:
-      enabled: True
-      enableVmBehaviorOverrides: True
-      defaultVmBehavior: 'fullyAutomated'
-      vmotionRate: 3
-    vsan:
-      enabled: False
-      autoClaimStorage: False
   with_items:
     - "{{ oob_vcenter['clusters'] }}"
   tags:
     - create_oob_clusters
 
-- name: Destroy clusters in the IB vCenter
-  ignore_errors: no
-  vcenter_cluster:
-    hostname: "{{ ib_vcenter_url }}"
-    username: "{{ ib_vcenter_user_name }}"
-    password: "{{ ib_vcenter_user_password }}"
-    datacenter_name: "{{ ib_vcenter['datacenter_name'] }}"
-    cluster_name: "{{ item['name'] }}"
-    state: absent
-    ha:
-      enabled: True
-      admissionControlEnabled: True
-      failoverLevel: 1
-      hostMonitoring: 'enabled'
-      vmMonitoring: 'vmAndAppMonitoring'
-      vmMonitoring_sensitivity: 1
-      restartPriority: 'high'
-    drs:
-      enabled: True
-      enableVmBehaviorOverrides: True
-      defaultVmBehavior: 'fullyAutomated'
-      vmotionRate: 3
-    vsan:
-      enabled: False
-      autoClaimStorage: False
-  with_items:
-    - "{{ ib_vcenter['clusters'] }}"
-  tags:
-    - destroy_ib_clusters
-
 - name: Destroy clusters in the OOB vCenter
-  ignore_errors: no
-  vcenter_cluster:
+  local_action:
+    module: vmware_cluster
     hostname: "{{ oob_vcenter_url }}"
     username: "{{ oob_vcenter_user_name }}"
     password: "{{ oob_vcenter_user_password }}"
     datacenter_name: "{{ oob_vcenter['datacenter_name'] }}"
     cluster_name: "{{ item['name'] }}"
-    state: absent
-    ha:
-      enabled: True
-      admissionControlEnabled: True
-      failoverLevel: 1
-      hostMonitoring: 'enabled'
-      vmMonitoring: 'vmAndAppMonitoring'
-      vmMonitoring_sensitivity: 1
-      restartPriority: 'high'
-    drs:
-      enabled: True
-      enableVmBehaviorOverrides: True
-      defaultVmBehavior: 'fullyAutomated'
-      vmotionRate: 3
-    vsan:
-      enabled: False
-      autoClaimStorage: False
+    validate_certs: False
+    state: present
   with_items:
     - "{{ oob_vcenter['clusters'] }}"
   tags:
     - destroy_oob_clusters
+
